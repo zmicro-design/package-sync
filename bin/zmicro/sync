@@ -75,7 +75,7 @@ core() {
   local command="rsync -avz --progress $source $target"
 
   if [ -n "$exclude" ]; then
-    if [ -n "$(echo "$exclude" | awk -F ',' '{print $2}')" ] then
+    if [ -n "$(echo "$exclude" | awk -F ',' '{print $2}')" ]; then
       # more than one
       command="$command --exclude={$exclude}"
     else
