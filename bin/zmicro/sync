@@ -48,6 +48,7 @@ core() {
         exclude=$value
         shift # past key
         shift # past value
+        ;;
       --sudo)
         required_sudo=true
         shift # past key
