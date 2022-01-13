@@ -64,7 +64,7 @@ core() {
     exit 1
   fi
 
-  local command="rsync -av --progress $source $target"
+  local command="rsync -avz --progress $source $target"
   if [ "$required_sudo" = "true" ]; then
     command=$command" --rsync-path=\"sudo rsync\""
   fi
