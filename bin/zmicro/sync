@@ -13,6 +13,8 @@ help() {
   echo ""
   echo "    -s, --source  Set source, such as local directory(./data) or remote directory(user@example.com:/data)"
   echo "    -t, --target  Set target, such as local directory(./data) or remote directory(user@example.com:/data)"
+  echo "    -e, --exclude Exclude files matching PATTERN(dirname, filename), such -e \"node_modules\""
+  echo "                  Support multiple with comma, such as -e \"node_modules,.git\""
   echo "    --sudo        If you required root user, please make sure NOPASSWD user priviledge"
   echo "    -h, --help    Get help"
 }
@@ -22,6 +24,7 @@ core() {
   local required_sudo=false
   local source=""
   local target=""
+  local exclude=""
 
    while [[ $# -gt 0 ]]; do
     local key=$1
@@ -41,6 +44,10 @@ core() {
         shift # past key
         shift # past value
         ;;
+      -e | --exclude)
+        exclude=$value
+        shift # past key
+        shift # past value
       --sudo)
         required_sudo=true
         shift # past key
@@ -65,8 +72,19 @@ core() {
   fi
 
   local command="rsync -avz --progress $source $target"
+
+  if [ -n "$exclude" ]; then
+    if [ -n "$(echo "$exclude" | awk -F ',' '{print $2}')" ] then
+      # more than one
+      command="$command --exclude={$exclude}"
+    else
+      # only one
+      command="$command --exclude=\"$exclude\""
+    fi
+  fi
+
   if [ "$required_sudo" = "true" ]; then
-    command=$command" --rsync-path=\"sudo rsync\""
+    command="$command --rsync-path=\"sudo rsync\""
   fi
 
   # echo "command: "$command
