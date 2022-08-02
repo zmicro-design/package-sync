@@ -72,6 +72,14 @@ core() {
     exit 1
   fi
 
+  # is directory
+  if [ -d "$source" ]; then
+    # end with slash
+    if [ "${source:(-1)}" != "/" ]; then
+      source="$source/"
+    fi
+  fi
+
   local command="rsync -avz --progress $source $target"
 
   if [ -n "$exclude" ]; then
